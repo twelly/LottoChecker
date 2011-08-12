@@ -1,1 +1,17 @@
-Test directory
+How to build the test binaries
+------------------------------
+
+To build the binarize execitable:
+make binarize 
+
+To build the deskew execitable:
+make deskew 
+
+To build all executables:
+make all 
+
+How to run the test
+-------------------
+
+The following environment variable needs to be set before running the test.
+export LD_LIBRARY_PATH=../Lib
