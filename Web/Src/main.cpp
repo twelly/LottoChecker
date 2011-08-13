@@ -3,8 +3,18 @@
 #include <tstemplatematch.h>
 
 int main(int argc, char** argv) {
-    char *lotto_ticket_img_file = argv[1];
-    TSImage *bin_lotto_ticket_img;
+    char* lotto_ticket_img_file = argv[1];
+    char* template_dir          = argv[2];
+    int   threshold             = (argc >= 4) ? atoi(argv[3]) : 90;
+    FILE* lotto_ticket_file_ptr = NULL;
+
+    // Load ticket and lotto image files
+    if ((lotto_ticket_file_ptr = fopen(lotto_ticket_img_file, "r")) == NULL) {
+        printf("\nERROR: Lotto ticket <%s> does not exist\n", lotto_ticket_img_file);
+        return(1);
+    }
+       
+    fclose(lotto_ticket_file_ptr);
 
     // Load ticket and lotto image files
     TSImage *lotto_ticket_img = tsOpenImage(lotto_ticket_img_file);
@@ -14,14 +24,10 @@ int main(int argc, char** argv) {
     }
 
     // Pre-process lotto ticket image
-    bin_lotto_ticket_img = tsBinarizeImage(lotto_ticket_img, 60, 1);
-    //cvThreshold(lotto_ticket_img, lotto_ticket_img, 90, 255, CV_THRESH_BINARY_INV);
-    //cvSmooth(lotto_ticket_img, lotto_ticket_img, CV_GAUSSIAN, 3, 0, 0, 0);
-    //cvErode(lotto_ticket_img, lotto_ticket_img, NULL, 1);
-    //cvDilate(lotto_ticket_img, lotto_ticket_img, NULL, 1);
+    TSImage* bin_lotto_ticket_img = tsBinarizeImage(lotto_ticket_img, threshold, 1);
 
     // Find template match
-    int status = tsTplmInitialize();
+    int status = tsTplmInitialize(template_dir);
 
     if (status == 1) {
         tsTplmFindMatches(bin_lotto_ticket_img);

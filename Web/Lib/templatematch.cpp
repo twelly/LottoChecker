@@ -30,9 +30,11 @@ int         G_template_valid_coords[2][10] = {{0, 44, 77, 120, 163, 206, 250, 29
 /* 0 - Failure                                                                                               */
 /* 1 - Success                                                                                               */
 /*                                                                                                           */
-int tsTplmInitialize(void) {
-    int   ret_val      = 1;
-    char* template_dir = getenv("LOTTOCHECKER_TEMPLATE_DIR");
+int tsTplmInitialize(char* p_template_dir = NULL) {
+    int ret_val = 1;
+
+    // Where are the templates located
+    char* template_dir = (p_template_dir == NULL) ? getenv("LOTTOCHECKER_TEMPLATE_DIR") : p_template_dir;
 
     if (template_dir == NULL) {
         printf("\nERROR: <LOTTOCHECKER_TEMPLATE_DIR> environment variable is not set\n\n");

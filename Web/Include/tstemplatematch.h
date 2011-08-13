@@ -36,7 +36,7 @@ typedef struct _TSTplmMatchInfo {
 
 
 // Public Function Declarations
-int               tsTplmInitialize(void);
+int               tsTplmInitialize(char*);
 void              tsTplmDestroy(void);
 void              tsTplmFindMatches(TSImage*);
 
