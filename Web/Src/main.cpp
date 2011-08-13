@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <TemplateMatch.h>
+#include <templatematch.h>
 
 
 int main(int argc, char** argv) {

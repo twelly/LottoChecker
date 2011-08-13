@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <TemplateMatch.h>
+#include <templatematch.h>
 
 
 // Globals
