@@ -19,9 +19,12 @@ int main(int argc, char** argv) {
     //cvDilate(lotto_ticket_img, lotto_ticket_img, NULL, 1);
 
     // Find template match
-    tplm_initialize();
-    tplm_findMatches(lotto_ticket_img);
-    tplm_destroy();
+    int status = tplmInitialize();
+
+    if (status == 1) {
+        tplmFindMatches(lotto_ticket_img);
+        tplmDestroy();
+    }
 
     // Cleanup
     cvReleaseImage(&lotto_ticket_img);

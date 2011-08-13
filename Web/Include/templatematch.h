@@ -3,8 +3,8 @@
 
 
 // Defines
-#define TEMPLATE_0_TO_9_FILE "/home/jong/Desktop/templates/new_template_0_to_9.png"
-#define TEMPLATE_A_TO_Z_FILE "/home/jong/Desktop/templates/new_template_A_to_Z.png"
+#define TEMPLATE_0_TO_9_FILE "template_0_to_9.png"
+#define TEMPLATE_A_TO_Z_FILE "template_A_to_Z.png"
 
 #define TEMPLATE_0_TO_9 0
 #define TEMPLATE_A_TO_Z 1
@@ -34,11 +34,13 @@ typedef struct _TplmMatchInfo {
 } TplmMatchInfo;
 
 
-// Function Declarations
-int               tplm_cmpMatchInfo(const void*, const void*);
-bool              tplm_is_valid_contour(CvSeq*);
-void              tplm_initialize(void);
-void              tplm_destroy(void);
-void              tplm_findMatches(IplImage*);
-void              tplm_sortMatches(TplmMatchInfo*, int);
-TplmFindMatchInfo tplm_findMatch(int, IplImage*);
+// Public Function Declarations
+int               tplmInitialize(void);
+void              tplmDestroy(void);
+void              tplmFindMatches(IplImage*);
+
+// Private Function Declarations
+int               _tplmCmpMatchInfo(const void*, const void*);
+bool              _tplmIsValidContour(CvSeq*);
+void              _tplmSortMatches(TplmMatchInfo*, int);
+TplmFindMatchInfo _tplmFindMatch(int, IplImage*);
