@@ -1,13 +1,13 @@
 #include <cv.h>
 #include <highgui.h>
 #include <stdio.h>
-#include "imgprocessing.h"
+#include "tsimageproc.h"
 
 /* Binarize image */
 int main()
 {
-   TSImage_t *image = tsOpenImage("images/skewed10.jpg");
-   TSImage_t *dsk_image = tsDeskewImage(image);
+   TSImage *image = tsOpenImage("images/skewed10.jpg");
+   TSImage *dsk_image = tsDeskewImage(image);
    cvNamedWindow("original");
    cvShowImage("original", image);
    cvNamedWindow("output");

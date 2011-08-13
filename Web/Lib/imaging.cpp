@@ -2,7 +2,7 @@
 #include <cxcore.h>
 #include <highgui.h>
 #include <stdio.h>
-#include "imgprocessing.h"
+#include "tsimageproc.h"
 
 /*                                                                                                           */
 /* tsOpenImage()                                                                                             */
@@ -11,7 +11,7 @@
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
 /* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsOpenImage(const char *filename)                                                              */
+/* TSImage *tsOpenImage(const char *filename)                                                                */
 /*                                                                                                           */
 /* Description:                                                                                              */
 /* Opens a given image file and stores the bitmap information into an image buffer.                          */
@@ -21,13 +21,13 @@
 /* On success, it returns the image buffer. On failure, it returns NULL.                                     */
 /*                                                                                                           */
 
-TSImage_t *tsOpenImage(const char *filename)
+TSImage *tsOpenImage(const char *filename)
 {
     if (filename == NULL)
     {
         return NULL;
     }
-    TSImage_t* imageFile = cvLoadImage(filename, 1);
+    TSImage* imageFile = cvLoadImage(filename, 1);
     return imageFile;
 }
 
@@ -38,7 +38,7 @@ TSImage_t *tsOpenImage(const char *filename)
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
 /* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsOpenImage(const char *filename)                                                              */
+/* TSImage *tsOpenImage(const char *filename)                                                                */
 /*                                                                                                           */
 /* Description:                                                                                              */
 /* Releases a given image buffer.                                                                            */
@@ -47,7 +47,7 @@ TSImage_t *tsOpenImage(const char *filename)
 /* None.                                                                                                     */
 /*                                                                                                           */
 
-void tsReleaseImage(TSImage_t *image)
+void tsReleaseImage(TSImage *image)
 {
     if (image == NULL)
     {
@@ -64,7 +64,7 @@ void tsReleaseImage(TSImage_t *image)
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
 /* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsOpenImage(TSImage_t *image)                                                                  */
+/* TSImage *tsOpenImage(TSImage *image)                                                                      */
 /*                                                                                                           */
 /* Description:                                                                                              */
 /* Create a copy of the image buffer.                                                                        */
@@ -73,7 +73,7 @@ void tsReleaseImage(TSImage_t *image)
 /* Copy of the original image buffer.                                                                        */
 /*                                                                                                           */
 
-TSImage_t *tsCloneImage(TSImage_t *image)
+TSImage *tsCloneImage(TSImage *image)
 {
     IplImage* img_cloned;
     if (image == NULL)

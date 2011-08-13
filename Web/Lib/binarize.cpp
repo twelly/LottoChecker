@@ -2,7 +2,7 @@
 #include <cxcore.h>
 #include <highgui.h>
 #include <stdio.h>
-#include "imgprocessing.h"
+#include "tsimageproc.h"
 
 /*                                                                                                           */
 /* tsBinarizeImage()                                                                                         */
@@ -11,10 +11,10 @@
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
 /* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsBinarizeImage(TSImage_t *image, int threshold, int dilate)                                   */
+/* TSImage *tsBinarizeImage(TSImage *image, int threshold, int dilate)                                   */
 /*                                                                                                           */
 /* Arguments:                                                                                                */
-/* TSImage_t *image - Image buffer                                                                           */
+/* TSImage *image - Image buffer                                                                           */
 /* int threshold - Binarization threshold level (0-100)                                                      */
 /* int dilate - Dilate size (1-5)                                                                            */
 /*                                                                                                           */
@@ -26,7 +26,7 @@
 /*                                                                                                           */
 
 /* Inverse Image Binarization with noise filter */
-TSImage_t *tsBinarizeImage(TSImage_t *image, int threshold, int dilate)
+TSImage *tsBinarizeImage(TSImage *image, int threshold, int dilate)
 {
     IplImage* imgGray;
     IplImage* imgThresh;

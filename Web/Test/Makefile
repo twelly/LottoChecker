@@ -2,7 +2,7 @@ CFLAGS = -Wall -g -O0
 LDFLAGS = -L../Lib
 INCLUDE = -I/usr/include/opencv -I../Include -I.
 OPENCV = -lcxcore -lcv -lhighgui -lcvaux
-LIBS = $(OPENCV) -limgprocessing
+LIBS = $(OPENCV) -ltsimagelib
 
 all: binarize deskew
 

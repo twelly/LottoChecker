@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <sstream>
-#include "imgprocessing.h"
+#include "tsimageproc.h"
 
 /*                                                                                                           */
 /* tsDeskewImage()                                                                                           */
@@ -13,10 +13,10 @@
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
 /* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsDeskewImage(TSImage_t *image)                                                                      */
+/* TSImage *tsDeskewImage(TSImage *image)                                                                    */
 /*                                                                                                           */
 /* Arguments:                                                                                                */
-/* TSImage_t *image - Image buffer to deskew                                                                 */
+/* TSImage *image - Image buffer to deskew                                                                   */
 /*                                                                                                           */
 /* Description:                                                                                              */
 /* Deskew image using canny edge detection to calculate the skew angle.                                      */
@@ -25,7 +25,7 @@
 /* Image buffer with the deskewed image.                                                                     */
 /*                                                                                                           */
 /*                                                                                                           */
-TSImage_t *tsDeskewImage(TSImage_t *image)
+TSImage *tsDeskewImage(TSImage *image)
 {
     IplImage *img_gray = cvCreateImage(cvGetSize(image), image->depth, 1);
     IplImage *img_output = cvCloneImage(image);

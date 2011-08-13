@@ -1,15 +1,11 @@
 CFLAGS = -Wall -g -O0 -fPIC 
 LDFLAGS = -shared
 INCLUDE = -I/usr/include/opencv -I../Include -I.
-IMGPROCOBJS = imaging.o binarize.o deskew.o
-TPLMOBJS = templatematch.o
+OBJS = imaging.o binarize.o deskew.o templatematch.o
 
-all: libimgprocessing.so libtemplatematch.so
+all: libtsimagelib.so
 
-libtemplatematch.so: $(TPLMOBJS)
-	g++ -o $@ $^ $(LDFLAGS)
-
-libimgprocessing.so: $(IMGPROCOBJS)
+libtsimagelib.so: $(OBJS)
 	g++ -o $@ $^ $(LDFLAGS)
 
 imaging.o: imaging.cpp

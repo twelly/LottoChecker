@@ -1,5 +1,8 @@
+#include <cv.h>
+#include <cxcore.h>
+#include <highgui.h>
 #include <stdio.h>
-#include <templatematch.h>
+#include <tstemplatematch.h>
 
 
 // Globals
@@ -9,26 +12,25 @@ int         G_template_valid_coords[2][10] = {{0, 44, 77, 120, 163, 206, 250, 29
                                               {0, 44, 77, 120, 163, 206, 250, 299, 344, 389}};
 
 /*                                                                                                           */
-/* tplmInitialize()                                                                                          */
+/* tsTplmInitialize()                                                                                          */
 /*                                                                                                           */
-/* Binarize and dilate image                                                                                 */
+/* Initialize template matching library.                                                                     */
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
-/* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsBinarizeImage(TSImage_t *image, int threshold, int dilate)                                   */
+/* #include "tstemplatematch.h"                                                                              */
+/* int tsTplmInitialize(void)                                                                                */
 /*                                                                                                           */
 /* Arguments:                                                                                                */
-/* TSImage_t *image - Image buffer                                                                           */
-/* int threshold - Binarization threshold level (0-100)                                                      */
-/* int dilate - Dilate size (1-5)                                                                            */
+/* None                                                                                                      */
 /*                                                                                                           */
 /* Description:                                                                                              */
-/* Inversely binarize and dilate image.                                                                      */
+/* Initialize the template matching library.                                                                 */
 /*                                                                                                           */
 /* Returns:                                                                                                  */
-/* Image buffer of binarized image.                                                                          */
+/* 0 - Failure                                                                                               */
+/* 1 - Success                                                                                               */
 /*                                                                                                           */
-int tplmInitialize(void) {
+int tsTplmInitialize(void) {
     int   ret_val      = 1;
     char* template_dir = getenv("LOTTOCHECKER_TEMPLATE_DIR");
 
@@ -61,26 +63,24 @@ int tplmInitialize(void) {
 }
 
 /*                                                                                                           */
-/* tplmDestroy()                                                                                             */
+/* tsTplmDestroy()                                                                                           */
 /*                                                                                                           */
-/* Binarize and dilate image                                                                                 */
+/* Destroy the template.                                                                                     */
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
-/* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsBinarizeImage(TSImage_t *image, int threshold, int dilate)                                   */
+/* #include "tstemplatematch.h"                                                                              */
+/* void tsTplmDestroy(void)                                                                                  */
 /*                                                                                                           */
 /* Arguments:                                                                                                */
-/* TSImage_t *image - Image buffer                                                                           */
-/* int threshold - Binarization threshold level (0-100)                                                      */
-/* int dilate - Dilate size (1-5)                                                                            */
+/* None                                                                                                      */
 /*                                                                                                           */
 /* Description:                                                                                              */
-/* Inversely binarize and dilate image.                                                                      */
+/* Destroy the templates by releasing the image buffers.                                                     */
 /*                                                                                                           */
 /* Returns:                                                                                                  */
-/* Image buffer of binarized image.                                                                          */
+/* None                                                                                                      */
 /*                                                                                                           */
-void tplmDestroy(void) {
+void tsTplmDestroy(void) {
     // Destory the template images
     int num_templates = sizeof(G_template_images) / sizeof(char*);
 
@@ -90,32 +90,30 @@ void tplmDestroy(void) {
 }
 
 /*                                                                                                           */
-/* tplmFindMatches()                                                                                         */
+/* tsTplmFindMatches()                                                                                       */
 /*                                                                                                           */
-/* Binarize and dilate image                                                                                 */
+/* Find all matching sub-images                                                                              */
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
 /* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsBinarizeImage(TSImage_t *image, int threshold, int dilate)                                   */
+/* void tsTplmFindMatches(TSImage *p_source_img)                                                             */
 /*                                                                                                           */
 /* Arguments:                                                                                                */
-/* TSImage_t *image - Image buffer                                                                           */
-/* int threshold - Binarization threshold level (0-100)                                                      */
-/* int dilate - Dilate size (1-5)                                                                            */
+/* TSImage *p_source_img - Source image buffer                                                               */
 /*                                                                                                           */
 /* Description:                                                                                              */
-/* Inversely binarize and dilate image.                                                                      */
+/* Find all matching sub-images from the teamplate and store them.                                           */
 /*                                                                                                           */
 /* Returns:                                                                                                  */
-/* Image buffer of binarized image.                                                                          */
+/* None                                                                                                      */
 /*                                                                                                           */
-void tplmFindMatches(IplImage* p_source_img) {
+void tsTplmFindMatches(TSImage* p_source_img) {
     IplImage*     clone_source_img = cvCloneImage(p_source_img);
     CvSeq*        contours         = NULL;
     CvMemStorage* storage          = cvCreateMemStorage(0);
 
     int match_info_idx = 0;
-    TplmMatchInfo match_info_array[250];
+    TSTplmMatchInfo match_info_array[250];
 
     //cvNamedWindow("debug");
 
@@ -140,7 +138,7 @@ void tplmFindMatches(IplImage* p_source_img) {
  
         cvCopy(p_source_img, roi_img, NULL);
 
-        TplmFindMatchInfo find_info = _tplmFindMatch(TEMPLATE_0_TO_9, roi_img);
+        TSTplmFindMatchInfo find_info = _tplmFindMatch(TEMPLATE_0_TO_9, roi_img);
 
         match_info_array[match_info_idx].match      = find_info.match;
         match_info_array[match_info_idx].x_coord    = rect.x;
@@ -178,26 +176,27 @@ void tplmFindMatches(IplImage* p_source_img) {
 /*                                                                                                           */
 /* _tplmCmpMatchInfo()                                                                                       */
 /*                                                                                                           */
-/* Binarize and dilate image                                                                                 */
+/* Compare matching infos                                                                                    */
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
-/* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsBinarizeImage(TSImage_t *image, int threshold, int dilate)                                   */
+/* #include "tstemplatematch.h"                                                                              */
+/* int _tplmCmpMatchInfo(const void* p_a, const void* p_b)                                                   */
 /*                                                                                                           */
 /* Arguments:                                                                                                */
-/* TSImage_t *image - Image buffer                                                                           */
-/* int threshold - Binarization threshold level (0-100)                                                      */
-/* int dilate - Dilate size (1-5)                                                                            */
+/* p_a - matching info a                                                                                     */
+/* p_b - matching info b                                                                                     */
 /*                                                                                                           */
 /* Description:                                                                                              */
 /* Inversely binarize and dilate image.                                                                      */
 /*                                                                                                           */
 /* Returns:                                                                                                  */
-/* Image buffer of binarized image.                                                                          */
+/* 0 - .                                                                                                     */
+/* 1 - .                                                                                                     */
+/* -11 - .                                                                                                     */
 /*                                                                                                           */
 int _tplmCmpMatchInfo(const void* p_a, const void* p_b) {
-    TplmMatchInfo* info_a = (TplmMatchInfo*)p_a;
-    TplmMatchInfo* info_b = (TplmMatchInfo*)p_b;
+    TSTplmMatchInfo* info_a = (TSTplmMatchInfo*)p_a;
+    TSTplmMatchInfo* info_b = (TSTplmMatchInfo*)p_b;
 
     int ret_val    = 0;
     int y_diff     = info_a->y_coord - info_b->y_coord;
@@ -232,22 +231,21 @@ int _tplmCmpMatchInfo(const void* p_a, const void* p_b) {
 /* Binarize and dilate image                                                                                 */
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
-/* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsBinarizeImage(TSImage_t *image, int threshold, int dilate)                                   */
+/* #include "tstemplatematch.h"                                                                              */
+/* void _tplmSortMatches(TSTplmMatchInfo* p_match_info_arr, int p_num_items)                                   */
 /*                                                                                                           */
 /* Arguments:                                                                                                */
-/* TSImage_t *image - Image buffer                                                                           */
-/* int threshold - Binarization threshold level (0-100)                                                      */
-/* int dilate - Dilate size (1-5)                                                                            */
+/* p_match_info_arr - Matching info array                                                                    */
+/* int p_num_items - Number of items to process                                                              */
 /*                                                                                                           */
 /* Description:                                                                                              */
-/* Inversely binarize and dilate image.                                                                      */
+/* Sort the matching sub-images.                                                                             */
 /*                                                                                                           */
 /* Returns:                                                                                                  */
-/* Image buffer of binarized image.                                                                          */
+/* None                                                                                                      */
 /*                                                                                                           */
-void _tplmSortMatches(TplmMatchInfo* p_match_info_arr, int p_num_items) {
-    qsort(p_match_info_arr, p_num_items, sizeof(TplmMatchInfo), _tplmCmpMatchInfo);
+void _tplmSortMatches(TSTplmMatchInfo* p_match_info_arr, int p_num_items) {
+    qsort(p_match_info_arr, p_num_items, sizeof(TSTplmMatchInfo), _tplmCmpMatchInfo);
 
     int row = 0;
     
@@ -273,22 +271,21 @@ void _tplmSortMatches(TplmMatchInfo* p_match_info_arr, int p_num_items) {
 /*                                                                                                           */
 /* _tplmIsValidContour()                                                                                     */
 /*                                                                                                           */
-/* Binarize and dilate image                                                                                 */
+/* Check if its a valid contour                                                                              */
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
-/* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsBinarizeImage(TSImage_t *image, int threshold, int dilate)                                   */
+/* #include "tstemplatematch.h"                                                                              */
+/* bool _tplmIsValidContour(CvSeq* p_contour)                                                                */
 /*                                                                                                           */
 /* Arguments:                                                                                                */
-/* TSImage_t *image - Image buffer                                                                           */
-/* int threshold - Binarization threshold level (0-100)                                                      */
-/* int dilate - Dilate size (1-5)                                                                            */
+/* CvSeq* p_contour - Contour info                                                                           */
 /*                                                                                                           */
 /* Description:                                                                                              */
-/* Inversely binarize and dilate image.                                                                      */
+/* Check if it is a valid contour.                                                                           */
 /*                                                                                                           */
 /* Returns:                                                                                                  */
-/* Image buffer of binarized image.                                                                          */
+/* true - valid                                                                                              */
+/* false - invalid                                                                                           */
 /*                                                                                                           */
 bool _tplmIsValidContour(CvSeq* p_contour) {
     bool   valid = true;
@@ -307,26 +304,25 @@ bool _tplmIsValidContour(CvSeq* p_contour) {
 }
 
 /*                                                                                                           */
-/* _tplmFindMatch()                                                                                          */
+/* _tplmFindMatchInfo()                                                                                      */
 /*                                                                                                           */
-/* Binarize and dilate image                                                                                 */
+/* Find all matching sub-images                                                                              */
 /*                                                                                                           */
 /* Synopsis:                                                                                                 */
-/* #include "imgprocessing.h"                                                                                */
-/* TSImage_t *tsBinarizeImage(TSImage_t *image, int threshold, int dilate)                                   */
+/* #include "tstempatematch.h"                                                                               */
+/* TSTplmFindMatchInfo _tplmFindMatch(int p_template, TSImage* p_target_img)                                 */
 /*                                                                                                           */
 /* Arguments:                                                                                                */
-/* TSImage_t *image - Image buffer                                                                           */
-/* int threshold - Binarization threshold level (0-100)                                                      */
-/* int dilate - Dilate size (1-5)                                                                            */
+/* int p_template - Template number                                                                          */
+/* TSImage *p_target_img - Target image                                                                      */
 /*                                                                                                           */
 /* Description:                                                                                              */
-/* Inversely binarize and dilate image.                                                                      */
+/* Find all matching sub-images from the given template.                                                     */
 /*                                                                                                           */
 /* Returns:                                                                                                  */
-/* Image buffer of binarized image.                                                                          */
+/* Matching info.                                                                                            */
 /*                                                                                                           */
-TplmFindMatchInfo _tplmFindMatch(int p_template, IplImage* p_target_img) {
+TSTplmFindMatchInfo _tplmFindMatch(int p_template, IplImage* p_target_img) {
     // Get the template image
     IplImage* template_img = G_template_images[p_template];
 
@@ -394,7 +390,7 @@ TplmFindMatchInfo _tplmFindMatch(int p_template, IplImage* p_target_img) {
     // Clean up
     cvReleaseImage(&resized_target_img);
 
-    TplmFindMatchInfo match_info;
+    TSTplmFindMatchInfo match_info;
     match_info.match      = template_match;
     match_info.confidence = maxval;
 
